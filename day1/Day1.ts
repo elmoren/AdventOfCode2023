@@ -9,7 +9,8 @@ interface CalibrationPair {
     calibration: number;
 }
 
-function buildPair(first: string, last: string) {
+
+function buildPair(first: string, last: string): CalibrationPair {
     return {
         firstDigit: first,
         lastDigit: last,
@@ -18,7 +19,20 @@ function buildPair(first: string, last: string) {
 }
 
 function parseDigits(line: String): CalibrationPair {
-    let matches = line.match(/[0-9]/g) || ["0"];
+    const digitMap = {
+        "one": "o1e",
+        "two": "t2o",
+        "three": "t3e",
+        "four": "f4r",
+        "five": "f5e",
+        "six": "s6x",
+        "seven": "s7n",
+        "eight": "e8t",
+        "nine": "n9e"
+    };
+
+    Object.keys(digitMap).forEach(k => line = line.replaceAll(k, digitMap[k as keyof typeof digitMap]));
+    let matches = line.match(/[0-9]|one|two|three|four|five|six|seven|eight|nine/gi) || ["0"];
     return buildPair(matches[0], matches[matches.length - 1]);
 }
 
