@@ -32,6 +32,14 @@ class Card {
 }
 
 const cards: Card[] = data.map(d => new Card(d));
-const day1 = cards.reduce((acc, cur) => Number(acc) + Number(cur.score), 0);
+const part1 = cards.reduce((acc, cur) => Number(acc) + Number(cur.score), 0);
+console.log("Part 1:", part1);
 
-console.log(day1);
+const cardTotals: number[] = Array(cards.length);
+for (let i = cards.length - 1; i >= 0; i--) {
+    let current: Card = cards[i];
+    cardTotals[i] = cardTotals
+        .slice(i + 1, i + 1 +  current.matches.length)
+        .reduce((acc, cur) => acc + cur, 1);
+}
+console.log("Part 2:", cardTotals.reduce((acc, cur) => acc + cur, 0));
