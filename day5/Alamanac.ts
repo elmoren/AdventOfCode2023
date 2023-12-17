@@ -1,6 +1,7 @@
 import {AlmanacMap} from "./AlmanacMap";
+import {Range} from "./Range";
 
-export class Almanac  {
+export class Almanac {
     private map: Map<string, AlmanacMap> = new Map<string, AlmanacMap>();
 
     add(am: AlmanacMap) {
@@ -8,15 +9,36 @@ export class Almanac  {
     }
 
     traverse(src: string, start: number): number {
+        if (!this.map.has(src)) {
+            throw new Error("No map found for source: " + src);
+        }
+
         let almanacMap = this.map.get(src);
-        if (!almanacMap) {
-            return start;
+
+        let current = start;
+        while (almanacMap) {
+            current = almanacMap.map(current);
+            almanacMap = this.map.get(almanacMap.destination);
         }
 
-        if (this.map.has(almanacMap.destination)) {
-            return this.traverse(almanacMap.destination, almanacMap.map(start))
+        return current;
+    }
+
+    rangeTraverse(src: string, range: Range): number[] {
+        if (!this.map.has(src)) {
+            throw new Error("No map found for source: " + src);
         }
 
-        return almanacMap.map(start);
+        let almanacMap = this.map.get(src);
+        let ranges: Range[] = [range];
+
+        while (almanacMap) {
+            // @ts-ignore
+            ranges = ranges.map(r => almanacMap.mapRange(r)).flat();
+            // @ts-ignore
+            almanacMap = this.map.get(almanacMap.destination);
+        }
+
+        return ranges.map(r => [r.start, r.end]).flat();
     }
 }
