@@ -24,3 +24,18 @@ for (let i = 0; i < races.length; i++) {
 }
 
 console.log("Part 1:", ways_to_win.reduce((acc, n) => acc * n, 1));
+
+let part2_race: Race = {
+    duration_ms: Number(data[0].replaceAll(/\D/g, '')),
+    distance_mm: Number(data[1].replaceAll(/\D/g, ''))
+};
+
+let part2_ways_to_win = 0;
+for (let button_press = 1; button_press < part2_race.duration_ms - 1; button_press++) {
+    const d = calc_distance(button_press, part2_race);
+    if (d > part2_race.distance_mm) {
+        part2_ways_to_win++;
+    }
+}
+
+console.log("Part 2:", part2_ways_to_win);
