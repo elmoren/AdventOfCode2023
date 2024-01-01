@@ -96,34 +96,39 @@ export class JokersRules implements Rules {
 
     calcRank(cards: string[]): string {
         let cardCounts: { [key: string]: number } = {};
-        cards.forEach(c => cardCounts[c] = (cardCounts[c] + 1) || 1);
+        cards.filter(c => c != 'J').forEach(c => cardCounts[c] = (cardCounts[c] + 1) || 1);
         let sortedCounts: number[] = Object.keys(cardCounts).map(k => cardCounts[k]).sort((a, b) => b - a);
         let score: string = "";
+        let wildcards = cards.filter(c => c === 'J').length;
 
+        if (sortedCounts.length > 0) {
+            sortedCounts[0] += wildcards;
+        } else {
+            sortedCounts.push(wildcards);
+        }
+        
         if (sortedCounts.length === 1) {
             // 5 of a kind
-            return "6"
+            score = "6"
         } else if (sortedCounts.length === 2) {
             // 4 of a kind or full house
             if (sortedCounts[0] == 4) {
-                return "5"
+                score = "5"
             } else {
-                return "4"
+                score = "4"
             }
         } else if (sortedCounts.length === 3) {
             // 3 of a kind, 2 pair
-
             if (sortedCounts[0] === 3) {
-                return "3"
+                score = "3"
             } else {
-                return "2"
+                score = "2"
             }
         } else if (sortedCounts.length === 4) {
             // 1 pair
-            return "1"
-        }
-        else {
-            return "0"
+            score = "1"
+        } else {
+            score = "0"
         }
 
         for (const c of cards) {

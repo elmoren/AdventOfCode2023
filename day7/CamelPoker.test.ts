@@ -1,8 +1,8 @@
 import {describe, expect, test} from '@jest/globals';
 import { CamelHand } from './CamelHand';
-import { BaseRules } from './CamelPoker';
+import { Rules, BaseRules, JokersRules } from './CamelPoker';
 
-let rules = new BaseRules();
+let rules: Rules = new BaseRules();
 
 describe('Verify Hand Scoring', () => {
 
@@ -54,4 +54,23 @@ describe('Verify Hand Comparison', () => {
             expect(t.a.compareTo(t.b)).toBe(t.compareResult);
         })
     });
+})
+
+rules = new JokersRules();
+describe('Verify Jokers Wild Hand Scoring', () => {
+
+    let tests: {[key: string]: string} = {
+        "J3456": "10103040506",
+        "J345J": "30103040501",
+        "TTJKK": "41010011313",
+        "4JJJJ": "60401010101",
+        "JJJJJ": "60101010101"
+    };
+
+    Object.keys(tests).forEach(k => {
+        test(`Given hand '${k}, expect score is ${tests[k]}`, () => {
+            expect(rules.calcRank(k.split(''))).toBe(tests[k]);
+        })
+    });
+
 })
