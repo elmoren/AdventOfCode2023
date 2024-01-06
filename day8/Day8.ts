@@ -20,4 +20,5 @@ const nodes: MapNode[] = data
 
 const desertMap: DesertMap = new DesertMap(instructions, nodes);
 
-console.log("Part 1:", desertMap.navigate('AAA', 'ZZZ'));
+console.log("Part 1:", desertMap.navigate('AAA', (s) => s === 'ZZZ'));
+console.log("Part 2:", desertMap.spookyNavigate('A', 'Z'));
