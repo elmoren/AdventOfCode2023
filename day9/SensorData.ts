@@ -33,7 +33,6 @@ export class SensorData {
             }
         }
 
-        console.log(m);
         return m[0][0];
     }
 
