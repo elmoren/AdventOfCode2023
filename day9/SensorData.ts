@@ -8,7 +8,7 @@ export class SensorData {
         this.mappedData = this.calculate(dataPoints);
     }
 
-    public getResult() {
+    public extrapolateForward(): number {
         let m = this.mappedData;
 
         for (let i = m.length - 1; i >= 0; i--) {
@@ -22,7 +22,21 @@ export class SensorData {
         return m[0][m[0].length - 1];
     }
 
-    // Map into a 2d array where each subsequenc calculation is pre filled with zeros.
+    public extrapolateBackwards(): number {
+        let m = this.mappedData;
+
+        for (let i = m.length - 1; i >= 0; i--) {
+            if (i + 1 >= m.length) {
+                m[i].unshift(0);
+            } else {
+                m[i].unshift(m[i][0] - m[i+1][0]);
+            }
+        }
+
+        console.log(m);
+        return m[0][0];
+    }
+
     private calculate(dataPoints: number[]): number[][] {
         let dataMap: number[][] = [];
         dataMap.push(dataPoints);
@@ -30,11 +44,9 @@ export class SensorData {
         let cur = 0;
         while (!dataMap[cur].every(v => v === 0)) {
             let row: number[] = [];
-            let start = cur + 1;
-            row.push(...Array(start).fill(0));
 
-            for (let i = start; i < dataMap[cur].length; i++) {
-                row.push(dataMap[cur][i] - dataMap[cur][i-1]);
+            for (let i = 1; i < dataMap[cur].length; i++) {
+                row.push(dataMap[cur][i] - dataMap[cur][i-1]); //2105961943
             }
 
             dataMap.push(row);

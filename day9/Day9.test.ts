@@ -17,9 +17,19 @@ describe('Verify example cases.', () => {
 
     cases.forEach(c => {
         test('Expected value', () => {
-            expect(new SensorData(c.input).getResult()).toBe(c.expect)
+            expect(new SensorData(c.input).extrapolateForward()).toBe(c.expect)
+        }
+        )
+    })
+
+    let backwordsTest = {
+        input: [10, 13, 16, 21, 30, 45],
+        expect: 5
+    }
+
+    test('Expected value', () => {
+            expect(new SensorData(backwordsTest.input).extrapolateBackwards()).toBe(backwordsTest.expect)
         }
     )
-    })
 
 })
