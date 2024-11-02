@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
+use std::cmp;
 
 #[derive(Debug)]
 struct Grab {
@@ -13,6 +14,42 @@ struct Grab {
 struct Game {
     game_number: i32,
     grabs: Vec<Grab>,
+}
+
+trait ScoreGame {
+    fn score_part_one(&self) -> i32;
+    fn score_part_two(&self) -> i32;
+}
+
+impl ScoreGame for Game {
+    fn score_part_one(&self) -> i32 {
+        let (red, green, blue) = (12, 13, 14);
+
+        let invalid = self
+            .grabs
+            .iter()
+            .any(|g| g.red > red || g.green > green || g.blue > blue);
+
+        if invalid {
+            0
+        } else {
+            self.game_number
+        }
+    }
+
+    fn score_part_two(&self) -> i32 {
+        let tuple = self.grabs
+            .iter()
+            .fold((0, 0, 0), |acc, g| {
+                (
+                    cmp::max(acc.0, g.red),
+                    cmp::max(acc.1, g.green),
+                    cmp::max(acc.2, g.blue)
+                )
+            });
+
+        tuple.0 * tuple.1 * tuple.2
+    }
 }
 
 fn read_game(game: &String) -> Game {
@@ -62,10 +99,18 @@ fn main() {
     let file = File::open("input.txt").expect("Unable to open file");
     let reader = BufReader::new(file);
 
+    let mut part_one: i32 = 0;
+    let mut part_two: i32 = 0;
+
     for line in reader.lines() {
         let l = line.expect("Error reading from file");
         let game = read_game(&l);
 
-        println!("{:?}", game);
+        // println!("{l} -> {:?} : {}", game, game.score_part_one());
+        part_one += game.score_part_one();
+        part_two += game.score_part_two();
     }
+
+    println!("Part one: {part_one}");
+    println!("Part two: {part_two}");
 }
